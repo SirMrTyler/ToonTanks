@@ -8,45 +8,52 @@
 #include "ToonTanksPlayerController.h"
 #include "Sound/SoundBase.h"
 
-void AToonTanksGameMode::BeginPlay() {
+void AToonTanksGameMode::BeginPlay() 
+{
     Super::BeginPlay();
 
     HandleGameStart();
 }
 
-
-void AToonTanksGameMode::ActorDied(AActor* DeadActor) {
-
+// This handles which actor died, and what happens when they die.
+void AToonTanksGameMode::ActorDied(AActor* DeadActor) 
+{
     if(DeadActor == Tank) {
         Tank->HandleDestruction();
-        if(ToonTanksPlayerController) {
+        
+        if(ToonTanksPlayerController) 
+        {
             ToonTanksPlayerController->SetPlayerEnabledState(false);
         }
         UGameplayStatics::PlaySound2D(this, YouLoseAudio);
         GameOver(false);
     }
-    else if(ATower* DestroyedTower = Cast<ATower>(DeadActor)) {
-
+    else if(ATower* DestroyedTower = Cast<ATower>(DeadActor)) 
+    {
         DestroyedTower->HandleDestruction();
         TargetTowers--;
-        if(TargetTowers == 0) {
+        if(TargetTowers == 0) 
+        {
             UGameplayStatics::PlaySound2D(this, YouWinAudio);
             GameOver(true);
         }
-
     }
-
 }
 
-void AToonTanksGameMode::HandleGameStart() {
-    
+void AToonTanksGameMode::HandleGameStart() 
+{
+    // This defines how many towers need to be destroy for the user to win
     TargetTowers = GetTargetTowerCount();
+    // This sets the controller of the tank to the first input on user system
     Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0));
+    // This declares which tank the player will control
     ToonTanksPlayerController = Cast<AToonTanksPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 
     StartGame();
 
-    if(ToonTanksPlayerController) {
+    if(ToonTanksPlayerController) 
+    {
+        // This is what disallows the player to move during the countdown at the beginning of the game.
         ToonTanksPlayerController->SetPlayerEnabledState(false);
         FTimerHandle PlayerEnableTimerHandle;
         FTimerDelegate PlayerEnableTimerDelegate = FTimerDelegate::CreateUObject(
@@ -62,10 +69,10 @@ void AToonTanksGameMode::HandleGameStart() {
     }
 }
 
-int32 AToonTanksGameMode::GetTargetTowerCount() {
-
+// This tells us how many Towers are left.
+int32 AToonTanksGameMode::GetTargetTowerCount() 
+{
     TArray<AActor*> Towers;
     UGameplayStatics::GetAllActorsOfClass(this, ATower::StaticClass(), Towers);
-    return Towers.Num();
-    
+    return Towers.Num();    
 }
