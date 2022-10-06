@@ -47,9 +47,14 @@ void ABasePawn::HandleDestruction() {
 
 // This function gets called with the user moves their mouse around and is used to rotate the turret mesh on top of base mesh.
 void ABasePawn::RotateTurret(FVector LookAtTarget) {
+	// LookAtTarget is the locational vector of the mouse cursor.
+	// Here we take the LookAtTarget and subtract from the turrets current location to get how far the turret must move.
 	FVector ToTarget = LookAtTarget - TurretMesh->GetComponentLocation();
+	
+	// This creates a local rotational variable that rotates the turret according to ToTarget
 	FRotator LookAtRotation = FRotator(0.f, ToTarget.Rotation().Yaw, 0.f);
 	
+	// Using the local rotation variable we made we set the turrets rotational data to it so that the user sees rotation of the mesh
 	TurretMesh->SetWorldRotation(
 		FMath::RInterpConstantTo(TurretMesh->GetComponentRotation(), 
 		LookAtRotation, 
@@ -57,7 +62,7 @@ void ABasePawn::RotateTurret(FVector LookAtTarget) {
 		300.f));
 }
 
-// This function gets called when the user press the LMB. It handles projectile creation/ownership.
+// This function gets called when the user press the LMB. It handles the projectiles creation/location/rotation/ownership.
 void ABasePawn::Fire() {
 
 	FVector Location = ProjectileSpawnPoint->GetComponentLocation();
