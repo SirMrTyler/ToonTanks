@@ -39,10 +39,15 @@ if(InFireRange())
     Fire();
 }
 
-bool ATower::InFireRange() {
-    if(Tank) {
+// This function declares whether or not there is something within the acceptable range for the turret to fire at. If there isn't, it won't fire.
+bool ATower::InFireRange() 
+{
+    if(Tank) 
+    {
+        // Here we declare a local distance vector variable and called the Dist() function that subtracts the final distance from the start distance.
         float Distance = FVector::Dist(GetActorLocation(), Tank->GetActorLocation());
-
+        
+        // As long as Distance is less than or equal to fire range, the towerturret is allowed to fire at the player.
         if(Distance <= FireRange)
             return true;
     }
