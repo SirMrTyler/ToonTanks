@@ -5,7 +5,7 @@
 #include "GameFramework/Pawn.h"
 
 void AToonTanksPlayerController::SetPlayerEnabledState(bool bPlayerEnabled) {
-    
+    // This tells the system when the tank can be controlled by the user depending on whether bPlayerEnabled is true or not
     if(bPlayerEnabled) {
         GetPawn()->EnableInput(this);
     }
