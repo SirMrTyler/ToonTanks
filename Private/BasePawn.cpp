@@ -14,21 +14,28 @@ ABasePawn::ABasePawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	// Creates a CapsuleComp object that we can add onto other objects within the game
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Collider"));
+	// Setting RootComponent equal to our CapsuleComp makes it the parent component on it's object (in this case it's the BasePawn)
 	RootComponent = CapsuleComp;
-
+	
+	// Here we're attaching a meshcomponent to our RootComponent so that we can add textures to it's mesh (Base Mesh will be used for tanks).
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	BaseMesh->SetupAttachment(RootComponent);
 
+	// Here we're attaching a meshcomponent to our basemesh that can be used to add textures to our Tanks Turrets.
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
 	TurretMesh->SetupAttachment(BaseMesh);
 
+	// Here we're creating/attaching the mesh projectile to our turretmesh that will be used to fire missles.
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Point"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
 
 	BasePawnParticleSysComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Death Particles"));
 }
 
+// This function gets called whenever a BasePawn's health is <= 0
 void ABasePawn::HandleDestruction() {
 	if(DeathParticles) {
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticles, GetActorLocation(), GetActorRotation());
@@ -38,6 +45,7 @@ void ABasePawn::HandleDestruction() {
 		
 }
 
+// This function gets called with the user moves their mouse around and is used to rotate the turret mesh on top of base mesh.
 void ABasePawn::RotateTurret(FVector LookAtTarget) {
 	FVector ToTarget = LookAtTarget - TurretMesh->GetComponentLocation();
 	FRotator LookAtRotation = FRotator(0.f, ToTarget.Rotation().Yaw, 0.f);
@@ -49,6 +57,7 @@ void ABasePawn::RotateTurret(FVector LookAtTarget) {
 		300.f));
 }
 
+// This function gets called when the user press the LMB. It handles projectile creation/ownership.
 void ABasePawn::Fire() {
 
 	FVector Location = ProjectileSpawnPoint->GetComponentLocation();
