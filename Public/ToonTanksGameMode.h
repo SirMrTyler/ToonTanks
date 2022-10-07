@@ -15,6 +15,7 @@ class TOONTANKS_API AToonTanksGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	// Function tells us which actor died. Who would have thought?
 	void ActorDied(AActor* DeadActor);
 	
 protected:
@@ -30,6 +31,7 @@ private:
 	class ATank* Tank;
 	class AToonTanksPlayerController* ToonTanksPlayerController;
 
+	// Used as a variable to delay the starting of the game while a countdown takes place.
 	float StartDelay = 3.f;
 
 	void HandleGameStart();
